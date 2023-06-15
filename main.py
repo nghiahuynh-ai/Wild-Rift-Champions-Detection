@@ -2,7 +2,6 @@ import argparse
 import math
 import cv2
 import glob, os
-from matplotlib import pyplot as plt
 import numpy as np
 import tensorflow as tf
 from tqdm import tqdm
