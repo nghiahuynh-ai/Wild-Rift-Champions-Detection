@@ -13,11 +13,11 @@ Preprocessing steps:
 
 - Mask the pixels in the ground truth and test image that lie beyond the boundary of the detected circle.
 - `Masked test image:` 	![1686824950768](image/README/1686824950768.png)		`Masked ground truth:` ![1686824974165](image/README/1686824974165.png)
-- Normalize the ground truth and test image (Min-Max Normalize).
+- Normalize the ground truth and test image (Min-Max Normalization).
 
 Compare test images to groundtruths:
 
-* Distances for comparing two images: Structural Similarity Index Measure (SSIM), Peak Signal-to-Noise Ratio (PSNR).
+* Distances for comparing two images: `Structural Similarity Index Measure` (SSIM), `Peak Signal-to-Noise Ratio` (PSNR).
 * For each test image, iterate through the ground truth set and calculate SSIM and PSNR.
 * The ouput of a test image is the label of the reference image that has the highest score (SSIM/PSNR) when compared to the test image.
 
