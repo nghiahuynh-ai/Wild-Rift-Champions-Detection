@@ -24,14 +24,14 @@ Compare test images to groundtruths:
 Accuracy:
 
 * Without masking, without normalization:
-  * SSIM Measure: 52.041%
-  * PSNR Measure: 40.816%
+  * SSIM: 52.041%
+  * PSNR: 40.816%
 * With masking, without normalization:
-  * SSIM Measure: 59.184%
-  * PSNR Measure: 53.061%
+  * SSIM: 59.184%
+  * PSNR: 53.061%
 * Without masking, with normalization:
-  * SSIM Measure: 58.163%
-  * PSNR Measure: 61.224%
+  * SSIM: 58.163%
+  * PSNR: 61.224%
 
 Usage:
 
