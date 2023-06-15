@@ -1,4 +1,4 @@
-# Wild Drift Champions Classifier
+# Wild Drift Champions Detection
 
 Preprocessing steps:
 
