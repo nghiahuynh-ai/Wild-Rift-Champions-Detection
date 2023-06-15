@@ -6,7 +6,6 @@ from matplotlib import pyplot as plt
 import numpy as np
 import tensorflow as tf
 from tqdm import tqdm
-# from torchmetrics import MultiScaleStructuralSimilarityIndexMeasure as mcssim
 from matplotlib import pyplot as plt
 from matplotlib import image as mpimg
 
@@ -84,7 +83,7 @@ def get_mask(img_size):
                 mask[row][img_size - col - 1] = 0
     return mask
 
-def main(ref_path, test_path, img_size=42):
+def test(ref_path, test_path, img_size=42):
     
     mask = np.array([get_mask(img_size)] * 3, dtype=np.int8)
     mask = np.transpose(mask, (1, 2, 0))
@@ -94,6 +93,7 @@ def main(ref_path, test_path, img_size=42):
         for line in fin:
             splt = line.split()
             img = cv2.imread(os.path.join(ref_path, 'images' , splt[0]), cv2.IMREAD_COLOR)
+            img = cv2.normalize(img, None, alpha=0,beta=255, norm_type=cv2.NORM_MINMAX)
             img = img * mask
             ref.append(img)
             ref_labels.append(splt[1])
@@ -110,21 +110,17 @@ def main(ref_path, test_path, img_size=42):
         circles = find_circles(img_gray_blurred)
         cropped_img = crop_img(img, circles)
         cropped_img = cv2.resize(cropped_img, (img_size, img_size))
-        masked_img = mask * cropped_img
+        norm_img = cv2.normalize(cropped_img, None, alpha=0,beta=255, norm_type=cv2.NORM_MINMAX)
+        masked_img = mask * norm_img
             
         scores_ssim, scores_psnr = [], []
         for ith, src in enumerate(ref):
+            
             score_ssim = tf.image.ssim(masked_img, src, max_val=1.0)
             scores_ssim.append(score_ssim)
             score_psnr = cv2.PSNR(masked_img, src)
             scores_psnr.append(score_psnr)
-            # plt.imshow(src)
-            # plt.show()
-        
-            # plt.imshow(masked_img)
-            # plt.show()
             
-            # raise
         pred_ssim = np.argmax(scores_ssim)
         pred_psnr = np.argmax(scores_psnr)
         file = file.split('\\')[1]
@@ -148,20 +144,70 @@ def main(ref_path, test_path, img_size=42):
         else:
             psnr_false_samples += 1
     print('PSNR: ', round((psnr_true_samples)/(psnr_true_samples + psnr_false_samples) * 100, 3), '%')
+    
+    
+def predict(test_path, distance, img_size=42):
+    mask = np.array([get_mask(img_size)] * 3, dtype=np.int8)
+    mask = np.transpose(mask, (1, 2, 0))
+
+    ref, ref_labels = [], []
+    with open(os.path.join(ref_path, 'metadata.txt'), 'r') as fin:
+        for line in fin:
+            splt = line.split()
+            img = cv2.imread(os.path.join(ref_path, 'images' , splt[0]), cv2.IMREAD_COLOR)
+            img = cv2.normalize(img, None, alpha=0,beta=255, norm_type=cv2.NORM_MINMAX)
+            img = img * mask
+            ref.append(img)
+            ref_labels.append(splt[1])
+
+    img, img_gray_blurred = preprocess_data(test_path)
+    circles = find_circles(img_gray_blurred)
+    cropped_img = crop_img(img, circles)
+    cropped_img = cv2.resize(cropped_img, (img_size, img_size))
+    norm_img = cv2.normalize(cropped_img, None, alpha=0,beta=255, norm_type=cv2.NORM_MINMAX)
+    masked_img = mask * norm_img
+            
+    scores = []
+    for ith, src in enumerate(ref):
+        if distance == 'ssim':
+            score = tf.image.ssim(masked_img, src, max_val=1.0)
+        else:
+            score = cv2.PSNR(masked_img, src)
+        scores.append(score)  
+    pred = np.argmax(scores)
+        
+    return ref_labels[pred]
         
 
 if __name__=="__main__":
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument('ref_path', type=str)
-    # parser.add_argument('test_path', type=str)
-    # args = parser.parse_args()
-    # ref_path = args.ref_path
-    # test_path = args.test_path
-    # main(ref_path, test_path)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('mode', type=str)
+    parser.add_argument('refpath', default='', type=str)
+    parser.add_argument('testpath', default='', type=str)
+    parser.add_argument('--distance', default='ssim', type=str)
     
-    main(
-        ref_path='C:/Users/Admin/Documents/Computer Science/AI Engineer Test - HuynhNguyenHieuNghia/reference/', 
-        test_path='C:/Users/Admin/Documents/Computer Science/AI Engineer Test - HuynhNguyenHieuNghia/test_data/'
-    )
+    args = parser.parse_args()
+    mode = args.mode
+    assert mode in ['test', 'predict']
+    
+    ref_path = args.refpath
+    test_path = args.testpath
+    distance = args.distance
+    
+    if mode == 'test':
+        if not os.path.exists(ref_path) or not os.path.exists(test_path):
+            raise IOError('Directory(s) does not exist!')
+        test(ref_path, test_path)
+        
+    if mode == 'predict':
+        if not os.path.exists(ref_path) or not os.path.exists(test_path):
+            raise IOError('Directory(s) does not exist!')
+        assert distance in ['ssim', 'psnr']
+        print(predict(test_path, distance))
+    
+    # test(
+    #     ref_path='C:/Users/Admin/Documents/Computer Science/AI Engineer Test - HuynhNguyenHieuNghia/reference/', 
+    #     test_path='C:/Users/Admin/Documents/Computer Science/AI Engineer Test - HuynhNguyenHieuNghia/test_data/'
+    # )
 
             

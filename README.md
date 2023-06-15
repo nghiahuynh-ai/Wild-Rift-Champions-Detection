@@ -1,4 +1,4 @@
-# Wild Drift Champion Classifier
+# Wild Drift Champions Classifier
 
 Preprocessing steps:
 
@@ -9,28 +9,41 @@ Preprocessing steps:
 * Crop the image precisely to the diameter of the selected circle's edge.
 * Resize the cropped images to 42 x 42 pixels to match the ground truth's size.
 
-  `Test image:` 		![1686768796531](image/README/1686768796531.png)		`Ground truth:` 			![1686803011753](image/README/1686803011753.png)
+  `Cropped test image:` 	![1686768796531](image/README/1686768796531.png)		`Ground truth:` 		![1686803011753](image/README/1686803011753.png)
 
 - Mask the pixels in the ground truth and test image that lie beyond the boundary of the detected circle.
-  `Cropped test image:` 	![1686824950768](image/README/1686824950768.png)		`Cropped ground truth:` 	![1686824974165](image/README/1686824974165.png)
+  `Masked test image:` 	![1686824950768](image/README/1686824950768.png)		`Masked ground truth:` ![1686824974165](image/README/1686824974165.png)
+- Normalize the ground truth and test image (Min-Max Normalize).
 
 Compare test images to groundtruths:
 
-* Distances: Structural Similarity Index Measure (SSIM), Peak Signal-to-Noise Ratio (PSNR).
+* Distances for comparing two images: Structural Similarity Index Measure (SSIM), Peak Signal-to-Noise Ratio (PSNR).
 * For each test image, iterate through the ground truth set and calculate SSIM and PSNR.
 * The ouput of a test image is the label of the reference image that has the highest score (SSIM/PSNR) when compared to the test image.
 
 Accuracy:
 
-* Without masking:
+* Without masking, without normalization:
   * SSIM Measure: 52.041%
   * PSNR Measure: 40.816%
-* With masking:
+* With masking, without normalization:
   * SSIM Measure: 59.184%
   * PSNR Measure: 53.061%
+* Without masking, with normalization:
+  * SSIM Measure: 58.163%
+  * PSNR Measure: 61.224%
 
-Run:
+Usage:
 
 ```
-py main.py <path/to/refrence> <path/to/test_data>
+py main.py mode refpath testpath [--distance]
+
+positional arguments:
+mode: accept one of the "test" or "predict" values; "test" mode calculates the accuracy of the classifier; "predict" mode outputs the name of the specified champion.
+refpath: path to ground truths (contain folder "image" and file metadata.txt).
+testpath: path to folder "test_data" if mode is "test", otherwise path to a specific image.
+
+optional arguments:
+--distance: distance for comparing two images, accept one of the "ssim" or "psnr" values used for "predict" mode, default "ssim".
+
 ```
