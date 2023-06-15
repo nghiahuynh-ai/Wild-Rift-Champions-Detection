@@ -12,7 +12,7 @@ Preprocessing steps:
   `Cropped test image:` 	![1686768796531](image/README/1686768796531.png)		`Ground truth:` 		![1686803011753](image/README/1686803011753.png)
 
 - Mask the pixels in the ground truth and test image that lie beyond the boundary of the detected circle.
-  `Masked test image:` 	![1686824950768](image/README/1686824950768.png)		`Masked ground truth:` ![1686824974165](image/README/1686824974165.png)
+- `Masked test image:` 	![1686824950768](image/README/1686824950768.png)		`Masked ground truth:` ![1686824974165](image/README/1686824974165.png)
 - Normalize the ground truth and test image (Min-Max Normalize).
 
 Compare test images to groundtruths:
@@ -39,11 +39,14 @@ Usage:
 py main.py mode refpath testpath [--distance]
 
 positional arguments:
-mode: accept one of the "test" or "predict" values; "test" mode calculates the accuracy of the classifier; "predict" mode outputs the name of the specified champion.
+mode: 	accept one of the "test" or "predict" values; 
+	"test" mode calculates the accuracy of the classifier;
+	"predict" mode outputs the name of the specified champion.
 refpath: path to ground truths (contain folder "image" and file metadata.txt).
 testpath: path to folder "test_data" if mode is "test", otherwise path to a specific image.
 
 optional arguments:
---distance: distance for comparing two images, accept one of the "ssim" or "psnr" values used for "predict" mode, default "ssim".
+--distance: 	distance for comparing two images, 
+		accept one of the "ssim" or "psnr" values used for "predict" mode, default "ssim".
 
 ```
