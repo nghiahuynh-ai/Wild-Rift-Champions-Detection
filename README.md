@@ -29,7 +29,7 @@ Accuracy:
 * With masking, without normalization:
   * SSIM: 59.184%
   * PSNR: 53.061%
-* Without masking, with normalization:
+* With masking, with normalization:
   * SSIM: 58.163%
   * PSNR: 61.224%
 
