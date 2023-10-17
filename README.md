@@ -12,7 +12,9 @@ Preprocessing steps:
   `Cropped test image:` 	![1686768796531](image/README/1686768796531.png)		`Ground truth:` 		![1686803011753](image/README/1686803011753.png)
 
 - Mask the pixels in the ground truth and test image that lie beyond the boundary of the detected circle.
-- `Masked test image:` 	![1686824950768](image/README/1686824950768.png)		`Masked ground truth:` ![1686824974165](image/README/1686824974165.png)
+  
+  `Masked test image:` 	![1686824950768](image/README/1686824950768.png)		`Masked ground truth:` ![1686824974165](image/README/1686824974165.png)
+
 - Normalize the ground truth and test image (Min-Max Normalization).
 
 Compare test images to groundtruths:
